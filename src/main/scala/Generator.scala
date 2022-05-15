@@ -114,9 +114,17 @@ object Generator {
     // setup default string variable to
     var thisSale = new StringBuilder("")
 
+
+    // set a time and count for records to see how long and how many records produced.
+    val startTime = LocalDateTime.now()
+    var count = 0
     // temporary loop to see all moving parts just to create a list of 20 years data 3 sales per day
+
+
     for (x <- 0 to salesPeriod) {
 
+      // to text how many sales records are created
+      count = count + 1
       // ---------------------    This section may be moved to other function     -----------------------------
 
       // generate random customer
@@ -129,8 +137,9 @@ object Generator {
       // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
       val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
       // set price of product to price of product plus generated qty
-      val price = product
-
+      val price = (product(3).toDouble * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
+      // set current dateTime
+      val dateTime = currentDatePointer
       // generate website ordered from at random
       val website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
       // setup transaction Id -- to be unique, used orderId and Date
@@ -148,16 +157,33 @@ object Generator {
         ""
       }
 
-      //println(product)
-
       // ---------- Build JSON Section -----------//
       thisSale ++= "{\"order_id\":\"" + orderId + "\", "
+      thisSale ++=  "\"" + customerColumnHeader(0) + "\":\"" + customer(0) + "\", "
+      thisSale ++=  "\"" + customerColumnHeader(1) + "\":\"" + customer(1) + "\", "
+      thisSale ++=  "\"" + productColumnHeader(0) + "\":\"" + product(0) + "\", "
+      thisSale ++=  "\"" + productColumnHeader(1) + "\":\"" + product(1) + "\", "
+      thisSale ++=  "\"" + productColumnHeader(2) + "\":\"" + product(2) + "\", "
+      thisSale ++=  "\"payment_type\":\"" + paymentType + "\", "
+      thisSale ++=  "\"qty\":\"" + qty.toString + "\", "
+      thisSale ++=  "\"price\":\"" + price + "\", "
+      thisSale ++=  "\"datetime\":\"" + dateTime.toString + "\", "
+      thisSale ++=  "\"" + customerColumnHeader(2) + "\":\"" + customer(2) + "\", "
+      thisSale ++=  "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
+      thisSale ++=  "\"ecommerce_website_name\":\"" + website + "\", "
+      thisSale ++=  "\"payment_txn_id\":\"" + paymentTxnId + "\", "
+      thisSale ++=  "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
+      thisSale ++=  "\"failure_reason\":\"" + failureReason + "\", "
 
+      println(thisSale.toString)
 
       // Update Necessary Items
       orderId += 1
       currentDatePointer = currentDatePointer.plusDays(1)
     }
+    val endTime = LocalDateTime.now()
+    println(count)
+    println(startTime +" : " + endTime)
 
 
   }
