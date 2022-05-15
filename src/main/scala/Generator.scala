@@ -9,16 +9,17 @@ import java.text.{DateFormat, FieldPosition, ParsePosition, SimpleDateFormat}
 import java.util.Date
 import scala.collection.mutable._
 import java.time._
+import scala.util.Random
 
 object Generator {
 
-  def main(args: Array[String]):Unit = {
+  def main(args: Array[String]): Unit = {
 
     var presets = Map(
-      "minNumSales" -> "122000",  // minimum number of records allowed
+      "minNumSales" -> "122000", // minimum number of records allowed
       "startDate" -> "1980,1,1", // start date of sales
-      "endDate" -> "2000,1,1",   // end date of sales
-      "minRecordsPerDay" -> ""   // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
+      "endDate" -> "2000,1,1", // end date of sales
+      "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
 
     // some default values
@@ -31,16 +32,16 @@ object Generator {
 
   }
 
-  def getCSVFiles(presets:Map[String,String], filePath1:String = "", filePath2:String = ""): Unit = {
+  def getCSVFiles(presets: Map[String, String], filePath1: String = "", filePath2: String = ""): Unit = {
 
     val customerFile = Source.fromFile(filePath1)
     val productFile = Source.fromFile(filePath2)
     // create column header for customers
     val customerColumnsSrc = customerFile.getLines.take(1).toList
-    val customerColumns = customerColumnsSrc(0).split(",").toList  // create list of customer columns
+    val customerColumns = customerColumnsSrc(0).split(",").toList // create list of customer columns
     // create column header for products
     val productColumnsSrc = productFile.getLines.take(1).toList
-    val productColumns = productColumnsSrc(0).split(",").toList  // create list of product columns
+    val productColumns = productColumnsSrc(0).split(",").toList // create list of product columns
     // get remaining lines from csv to create data table
     val customerData = customerFile.getLines.toList
     val productData = productFile.getLines.toList
@@ -49,27 +50,27 @@ object Generator {
     val productValuesTable = buildList(productData)
 
     // handoff to build sales event function to build the sales event and pass each built sale to the producer
-    createSaleEvent(presets, customerValuesTable, productValuesTable, customerColumns, productColumns ) // may change order of this in the future, to send to producer then producer func calls create sales event?
+    createSaleEvent(presets, customerValuesTable, productValuesTable, customerColumns, productColumns) // may change order of this in the future, to send to producer then producer func calls create sales event?
 
   }
 
-  def buildList( initList:List[String] ):List[List[String]] = {
+  def buildList(initList: List[String]): List[List[String]] = {
 
     val tempList = new ListBuffer[List[String]]()
 
-    for ( x <- 0 until initList.length ) {
+    for (x <- 0 until initList.length) {
       val tempSubList = initList(x).split(",").toList
-      tempList.append( tempSubList )
+      tempList.append(tempSubList)
     }
     return tempList.toList
   }
 
-  def createSaleEvent( presets:Map[String,String], customerData:List[List[String]], productData:List[List[String]], customerColumnHeader:List[String], productColumnHeader:List[String] ): Unit = {
+  def createSaleEvent(presets: Map[String, String], customerData: List[List[String]], productData: List[List[String]], customerColumnHeader: List[String], productColumnHeader: List[String]): Unit = {
 
     // setup default payment types
-    val paymentTypes = List( "debit card", "credit card", "internet banking", "upi", "wallet" )
+    val paymentTypes = List("debit card", "credit card", "internet banking", "upi", "wallet")
     // setup default failure reasons
-    val failureReason = List( "Insufficient Funds", "Invalid Input", "Connection Error" )
+    val failureReasons = List("Insufficient Funds", "Invalid Input", "Connection Error")
     // setup default websites
     val websites = Map(
       "gogogrocery.com" -> "Fruits, Beverages, Baby Food, Vegetables, Cereal, Meat, Snacks ",
@@ -81,16 +82,24 @@ object Generator {
       "onfice.com" -> "Tech_Hardware, Software, Office Supplies",
       "discodiscount.com" -> "Cosmetics, Clothes, Entertainment_Technology",
       "petesbigbutcher.net" -> "Meat, Clothes, Snacks",
-      "vis4vegan.com" ->"Fruits, Beverages, Baby Food, Vegetables, Snacks"
+      "vis4vegan.com" -> "Fruits, Beverages, Baby Food, Vegetables, Snacks"
     )
     val websiteNames = websites.keys.toList
     // set the start date to preset date if set, otherwise set date to current date
     val startDate = {
-      if (presets("startDate") != ""){ dateWorker(presets, "startDate" ) } else { LocalDate.now() }
+      if (presets("startDate") != "") {
+        dateWorker(presets, "startDate")
+      } else {
+        LocalDate.now()
+      }
     }
     // set end date value, ' need to make if equal to or greater than start iggy and keep running '
     val endDate = {
-      if (presets("endDate") != ""){ dateWorker(presets, "endDate" ) } else { LocalDate.now() }
+      if (presets("endDate") != "") {
+        dateWorker(presets, "endDate")
+      } else {
+        LocalDate.now()
+      }
     }
     // set a current pointer to update the date of each sale
     var currentDatePointer = startDate
@@ -106,55 +115,99 @@ object Generator {
     var thisSale = new StringBuilder("")
 
     // temporary loop to see all moving parts just to create a list of 20 years data 3 sales per day
-    for ( x <- 0 to salesPeriod ) {
-
-      thisSale ++= "{\"order_id\":\"" + orderId + "\", "
+    for (x <- 0 to salesPeriod) {
 
       // ---------------------    This section may be moved to other function     -----------------------------
 
-      // setup scala random utility
-      val r = scala.util.Random
       // generate random customer
-      val customer = customerData(r.nextInt(customerData.length))
+      val customer = customerData(Random.nextInt(customerData.length))
       // generate random product
-      val product = productData(r.nextInt(productData.length))
-      // generate random failure rate - set failure rate to 20% in this example
-      val failPass = if (r.nextInt(100) > 20){ "pass" }else{ "fail" }
-      // setup basic failure reason
-      val reasonFail = if (failPass == "fail"){failureReason(r.nextInt(failureReason.length))}else{ "" }
+      val product = productData(Random.nextInt(productData.length))
+
+      // payment_type
+      val paymentType = paymentTypes(Random.nextInt(paymentTypes.length))
+      // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
+      val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
+      // set price of product to price of product plus generated qty
+      val price = product
+
       // generate website ordered from at random
-      val website = websiteNames(r.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
+      val website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
       // setup transaction Id -- to be unique, used orderId and Date
       val paymentTxnId = s"${orderId}${currentDatePointer.toEpochDay}"
+      // generate random failure rate - set failure rate to 20% in this example
+      val paymentTxnSuccess = if (Random.nextInt(100) > 20) {
+        "pass"
+      } else {
+        "fail"
+      }
+      // setup basic failure reason
+      val failureReason = if (paymentTxnSuccess == "fail") {
+        failureReasons(Random.nextInt(failureReasons.length))
+      } else {
+        ""
+      }
 
-      println(website)
-      //println(thisSale.toString)
+      //println(product)
+
+      // ---------- Build JSON Section -----------//
+      thisSale ++= "{\"order_id\":\"" + orderId + "\", "
+
+
+      // Update Necessary Items
       orderId += 1
       currentDatePointer = currentDatePointer.plusDays(1)
-      //println(orderId)
     }
 
 
-    //  Here I need to set up
-    //  A math random select for customer
-    //  A math random for product -- may vary based off circumstances.
-    //  A math random for payment type -- also declare payment type variables
-    //  A math random for fail or pass  -- may add higher percent based on country, customer, etc
-    //  A math random with limitations on bad data for any field
-    //  Math.random for records for a date... has to be at least a minimum of x can be more
+  }
 
-
-
-
+  def trendCreator(): Unit = { // run a function to determine what trends need applied to the sale that is generated.
+    //val trendList = List(List("customerData", "productData", "percentage1", "percentage 2",))
 
   }
 
-  def trendCreator():Unit = {  // run a function to determine what trends need applied to the sale that is generated.
-      //val trendList = List(List("customerData", "productData", "percentage1", "percentage 2",))
+  def selectQty(rangeList: List[List[Int]] = List(List(50, 30), List(35, 65), List(15, 100))): Int = {
 
+    // set a top temp range to account for someone adding more than 100% in the list
+    var topTmpRng = 0
+    for(x <- 0 until rangeList.length){ topTmpRng = topTmpRng + rangeList(x)(0) }
+    topTmpRng = topTmpRng + 1
 
+    val tmpRng = Random.between(1,topTmpRng)
+    var lowQty = 0
+    var highQty = 0
+    var rngStep = 0
+
+    //println("//----------BREAK--------------//")
+
+    for (x <- 0 until rangeList.length) {
+
+      // preset range to initial value
+      if ( x == 0 ) { rngStep = rangeList(x)(0)}
+
+      //println(x + " : " + tmpRng + " : " + rangeList(x)(0) + " : " + highQty + " : " + rngStep )
+      if (x == 0 && tmpRng <= rangeList(x)(0) ) {
+        lowQty = 1
+        highQty = rangeList(x)(1) + 1  // add one on high qty to make it include the top number
+        //println(lowQty + " : " + highQty)
+      }
+      if (x != 0 && tmpRng <= rngStep && highQty == 0 ) {
+        lowQty = rangeList(x-1)(1) + 1  // inclusive add one to step 1 past previous top number
+        highQty = rangeList(x)(1) + 1 // exclusive top range, add one to include final top number
+        //println(lowQty + " : " + highQty)
+      }
+
+      // if not the end of the list add next rngStep to previous
+      if (x != rangeList.length -1 ){ rngStep = rngStep + rangeList(x+1)(0) }
+
+    }
+
+    //println(Random.between(lowQty,highQty))
+    return Random.between(lowQty,highQty)
 
   }
+
 
 // worker to set dates if defined
   def dateWorker(presets:Map[String,String], varName:String ):LocalDate ={
