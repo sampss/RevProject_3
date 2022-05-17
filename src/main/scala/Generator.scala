@@ -175,7 +175,7 @@ object Generator {
         thisSale ++= "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
         thisSale ++= "\"failure_reason\":\"" + failureReason + "\"}"
 
-        println(thisSale.toString)
+        //println(thisSale.toString)
 
         // Update Necessary Items
         orderId += 1
