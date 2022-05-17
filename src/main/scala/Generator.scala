@@ -25,7 +25,7 @@ object Generator {
     // some default values
     // default path to current csv file
     val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\"
-    val path1 = path + "testCustomers.csv"
+    val path1 = path + "customers.csv"
     val path2 = path + "testProducts.csv"
 
     getCSVFiles(presets, path1, path2)
@@ -75,11 +75,11 @@ object Generator {
     val websites = Map(
       "gogogrocery.com" -> "Fruits, Beverages, Baby Food, Vegetables, Cereal, Meat, Snacks ",
       "thehardstore.net" -> "Hardware, Household, Office Supplies, Clothes",
-      "EGad-get.com" -> "Entertainment_Technology, Tech_Hardware, Software",
+      "EGad-get.com" -> "Tech_Hardware",
       "allgoods.net" -> "",
       "NailsNNails.com" -> "Hardware, Cosmetics, Personal Care, Clothes",
       "memawmall.net" -> "Clothes, Cosmetics, Household, Snacks, Personal Care",
-      "onfice.com" -> "Tech_Hardware, Software, Office Supplies",
+      "onfice.com" -> "Tech_Hardware, Office Supplies",
       "discodiscount.com" -> "Cosmetics, Clothes, Entertainment_Technology",
       "petesbigbutcher.net" -> "Meat, Clothes, Snacks",
       "vis4vegan.com" -> "Fruits, Beverages, Baby Food, Vegetables, Snacks"
