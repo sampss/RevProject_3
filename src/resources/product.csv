@@ -1,0 +1,468 @@
+product_id,product_name,product_category,price
+1,Apple,Fruits,29.54
+2,Apricot,Beverages,34.93
+3,Avocado,Baby Food,16.37
+4,Banana,Vegetables,25.45
+5,Bilberry,Clothes,49.21
+6,Blackberry,Cereal,35.27
+7,Blackcurrant,Cosmetics,17.00
+8,Blueberry,Meat,24.12
+9,Currant,Office Supplies,34.32
+10,Cherry,Household,9.28
+11,Cherimoya,Snacks,46.49
+12,Clementine,Personal Care,48.48
+13,Date,Hardware,0.14
+14,Damson,Tech Hardware,6.34
+15,Durian,,29.94
+16,Eggplant,,5.94
+17,Elderberry,,49.31
+18,Feijoa,,21.76
+19,Gooseberry,,8.13
+20,Grape,,28.14
+21,Grapefruit,,34.24
+22,Guava,,47.84
+23,Huckleberry,,16.26
+24,Jackfruit,,47.70
+25,Jambul,,32.87
+26,Kiwi fruit,,11.89
+27,Kumquat,,32.73
+28,Legume,,43.52
+29,Lemon,,35.37
+30,Lime,,2.49
+31,Lychee,,36.22
+32,Mango,,2.67
+33,Mangostine,,34.17
+34,Melon,,20.95
+35,Cantaloupe,,23.17
+36,Honeydew melon,,18.09
+37,Watermelon,,11.56
+38,Rock melon,,30.57
+39,Nectarine,,22.89
+40,Orange,,20.88
+41,Peach,,12.72
+42,Pear,,36.01
+43,Williams pear or Bartlett pear,,23.22
+44,Pitaya,,25.14
+45,Physalis,,26.07
+46,Plum/prune (dried plum),,48.27
+47,Pineapple,,2.31
+48,Pomegranate,,47.27
+49,Raisin,,2.44
+50,Coca-Cola,,49.30
+51,Pepsi,,28.75
+52,Red Bull,,46.48
+53,Nescafe,,26.33
+54,Monster,,13.83
+55,Sprite,,25.61
+56,Gatorade,,27.80
+57,Dr Pepper,,6.37
+58,Mountain Dew,,38.62
+59,Lipton,,40.56
+60,Fanta,,4.84
+61,7-Up,,9.27
+62,Tropicana,,38.54
+63,Lavazza,,37.47
+64,Twinings,,22.48
+65,Mirinda,,48.08
+66,Milo,,38.62
+67,Jacobs,,1.96
+68,Aquafina,,21.98
+69,Evian,,41.13
+70,Folgers,,13.25
+71,San Pellegrino,,18.82
+72,Ovaltine,,49.24
+73,Dasani,,18.37
+74,Nespresso,,29.79
+75,Water,,31.80
+76,Chicken Sticks,,19.96
+77,Turkey Sticks,,38.33
+78,Gerber Graduate Fruit Strips,,38.71
+79,Gerber Carrot and Squash,,7.89
+80,Gerber Graduate Puffs Apple and Pear,,28.04
+81,Gerber Mango and Kiwi,,24.94
+82,Tropical Fruit Medley,,40.80
+83,Macaroni with Tomato and Beef,,8.89
+84,Cheese Filled Ravioli,,0.29
+85,Beef Noodles,,37.91
+86,Macaroni and Cheese,,35.62
+87,Spaghetti with Tomato and Meat,,9.54
+88,Vegetables and Beef,,49.42
+89,Vegetables and Lamb,,16.29
+90,Chicken Noodle Soup,,49.37
+91,Chicken Stew,,32.22
+92,Vegetables and Chicken,,35.28
+93,Pasta and Vegetables ,,24.50
+94,Turkey and Rice,,43.23
+95,Turkey and Vegetables,,34.19
+96,Green Beans,,8.15
+97,Diced Green Beans,,28.67
+98,Green Beans and Potatoes,,32.31
+99,Carrots,,16.04
+100,Gerber Dry Oatmeal,,37.72
+101,Butternut Squash and Corn,,24.93
+102,Diced Apples,,45.84
+103,Applesauce,,8.47
+104,Apricot and Tapioca,,35.34
+105,Creamed Corn,,49.22
+106,Creamed Corn with Vegetables,,31.26
+107,Peas,,42.81
+108,Diced Peas,,41.09
+109,Creamed Spinach,,24.16
+110,Bananas with Tapioca,,1.34
+111,Peaches,,3.47
+112,Pears,,37.62
+113,Plums with Tapioca,,5.91
+114,Prunes with Tapioca,,26.05
+115,Mango with Tapioca,,11.52
+116,Diced Pears,,24.90
+117,Applesauce with Apricots,,45.05
+118,Applesauce with Cherries,,10.46
+119,Applesauce with Pineapples,,27.36
+120,Apple and Raspberry Babyfood,,31.39
+121,Apple and Blueberry Babyfood,,7.72
+122,Apple Juice,,14.30
+123,Cereal with Bananas,,21.59
+124,Fruit Cookie,,36.10
+125,China Jute,,23.92
+126,Climbing wattle,,41.51
+127,Paracress,,10.21
+128,Common Marshmallow,,17.83
+129,Purple amaranth,,22.96
+130,Common amaranth,,16.11
+131,Prickly amaranth,,13.19
+132,Amaranth,,8.92
+133,Slender amaranth,,10.75
+134,Celery,,30.17
+135,Garden orache,,9.13
+136,Bank cress,,20.99
+137,"Chik-nam, Kra don",,18.02
+138,Indian spinach,,11.74
+139,Chard,,7.33
+140,Sea Beet,,16.87
+141,Common Borage,,18.10
+142,Abyssinian Cabbage,,4.37
+143,Indian mustard,,37.34
+144,Rutabaga,,6.30
+145,Rape Kale,,14.58
+146,Black Mustard,,11.12
+147,Wild Cabbage,,0.02
+148,Kale,,42.28
+149,Kai-lan,,8.42
+150,Cauliflower,,46.37
+151,Cabbage,,36.30
+152,Brussels Sprouts,,40.14
+153,Broccoli,,21.26
+154,Turnip,,40.76
+155,Bok Choi,,45.18
+156,Chinese Savoy,,8.64
+157,Mizuna,,34.82
+158,Napa Cabbage,,41.57
+159,Rapini,,49.08
+160,Rampion,,23.14
+161,Harebell,,44.93
+162,Caper,,2.71
+163,Wild Coxcomb,,48.67
+164,"Asian pennywort, Gotukola",,36.64
+165,Lamb's Quarters,,3.26
+166,American Wormseed,,40.11
+167,Southern Huauzontle,,10.83
+168,Good King Henry,,41.43
+169,Tree Spinach,,23.57
+170,Oak-Leaved Goosefoot,,29.71
+171,Huauzontle,,32.65
+172,Quinoa,,10.78
+173,Shirt,,47.72
+174,Pants,,10.21
+175,Skirt,,45.37
+176,Jorts,,31.84
+177,Jacket,,11.74
+178,Shoes,,4.39
+179,Underwear,,0.33
+180,Button-Down,,36.36
+181,Tie,,37.45
+182,Shorts,,29.35
+183,Socks,,29.85
+184,Jeans,,45.04
+185,Sweater,,21.10
+186,Coat,,31.85
+187,Tracksuit,,9.01
+188,Vest,,32.12
+189,Pajamas,,29.47
+190,Boots,,44.97
+191,Raincoat,,15.23
+192,Tanktop,,33.52
+193,Swimsuit,,12.45
+194,Dress,,33.33
+195,Heels,,17.17
+196,Blouse,,29.50
+197,Stockings,,3.54
+198,Scarf,,15.97
+199,Backpack,,9.26
+200,Bag,,12.47
+201,Earrings,,36.03
+202,Bracelet,,11.54
+203,Belt,,11.10
+204,Necklace,,33.78
+205,Purse,,14.08
+206,Wallet,,35.28
+207,Slippers,,3.67
+208,Baseball Cap,,3.74
+209,Watch,,3.27
+210,Polo Shirt,,35.83
+211,Bran,,36.12
+212,Natural Bran,,28.65
+213,Almond Delight,,8.54
+214,Apple Cinnamon Cheerios,,40.19
+215,Apple Jacks,,42.22
+216,Bran Flakes,,10.03
+217,Cap'n'Crunch,,17.24
+218,Cheerios,,31.44
+219,Cinnamon Toast Crunch,,22.62
+220,Cocoa Puffs,,34.16
+221,Corn Flakes,,18.50
+222,Oatmeal,,32.95
+223,Corn Pops,,3.51
+224,Count Chocula,,4.38
+225,Cream of Wheat,,46.19
+226,Crispix,,15.82
+227,Double Chex,,46.01
+228,Froot Loops,,41.90
+229,Frosted Flakes,,4.47
+230,Frosted Mini Wheats,,19.98
+231,Fruitful Bran,,8.10
+232,Fruity Pebbles,,30.75
+233,Golden Crisp,,37.38
+234,Golden Grahams,,16.35
+235,Honey Nut Cheerios,,6.98
+236,Life,,12.44
+237,Lucky Charms,,31.57
+238,Multi Grain Cheerios,,6.17
+239,Rice Krispies,,18.92
+240,Special K,,47.50
+241,Total,,21.15
+242,Total Corn Flakes,,22.98
+243,Total Raisin Bran,,24.16
+244,Trix,,12.89
+245,Wheaties,,15.52
+246,Moisturizer,,4.36
+247,Facial Cleanser,,17.99
+248,Foundation,,31.33
+249,Lipstick,,36.58
+250,Hair gel,,36.20
+251,Sunscreen,,5.52
+252,Face Mask,,31.10
+253,Eye Cream,,14.51
+254,Lip Gloss,,9.64
+255,Nail File,,49.55
+256,Nail Polish,,21.48
+257,Nail Polish Remover,,18.14
+258,Eye Liner,,29.78
+259,Exfoliator Cream,,37.63
+260,Exfoliating Scrub,,35.85
+261,Makeup Brush,,21.18
+262,Brush Cleanser,,16.24
+263,Concealer,,3.27
+264,Eyelash Extensions,,13.25
+265,Lip Balm,,1.95
+266,Shampoo,,5.12
+267,Conditioner,,16.20
+268,Volumizing Shampoo,,49.22
+269,Makeup Remover,,44.90
+270,Eyelash Curler,,8.18
+271,Toner,,14.32
+272,Eye Shadow,,27.74
+273,Nail Lacquer,,14.24
+274,Eyebrow Pencil,,18.67
+275,Mascara,,23.52
+276,Tweezers,,26.08
+277,Lotion,,10.84
+278,Ground Beef,,7.50
+279,Filet Mignon,,25.11
+280,Beef Chuck,,28.03
+281,Rotisserie Chicken,,45.10
+282,Chicken Nuggies,,3.61
+283,Chicken Breasts,,49.88
+284,Fried Chicken,,44.44
+285,Venison,,2.78
+286,Salmon,,13.83
+287,Tuna,,30.64
+288,Pork,,5.63
+289,Pork Loin,,31.25
+290,Beef Loin,,18.22
+291,The Other Other White Meat,,41.08
+292,Hot Dogs,,11.20
+293,Ribs,,47.96
+294,Lobster,,16.70
+295,Crabs,,34.43
+296,Big Ol' Meat,,19.06
+297,Staples,,32.54
+298,Stapler,,34.37
+299,Pens,,42.89
+300,Pencils,,31.85
+301,Wasp Attractant,,10.52
+302,Erasers,,39.03
+303,Paper,,22.77
+304,Stapler Accessories,,7.85
+305,Markers,,46.16
+306,Highlighters,,27.78
+307,Binder,,46.31
+308,Notebook,,45.71
+309,Paperclips,,10.24
+310,Hole Punch,,41.04
+311,Staple Remover,,32.10
+312,Paper Declippers,,28.75
+313,Glue,,49.72
+314,Reverse Scissors,,14.17
+315,Tape,,16.59
+316,Paper Shredder,,41.23
+317,White Out,,39.88
+318,Folders,,25.05
+319,File Organizer,,35.43
+320,Protractor,,34.68
+321,Ruler,,47.14
+322,File Cabinet,,41.42
+323,Rolly Chair,,27.47
+324,Chair,,1.11
+325,Table,,8.14
+326,Trash Can,,33.67
+327,Trash Bags,,48.04
+328,Bookshelf,,0.51
+329,Lamp,,36.03
+330,Lightbulb,,15.93
+331,Fans,,48.90
+332,Sheets,,22.98
+333,Pillows,,3.21
+334,Bath Towel,,38.57
+335,Handsoap,,25.74
+336,Toilet Brush,,19.28
+337,Couch,,25.93
+338,Bleach,,12.02
+339,Laundry Detergent,,26.15
+340,Storage Bin,,44.73
+341,Mattress,,0.13
+342,Body Pillow,,22.48
+343,Surge Protectors,,26.93
+344,Hand Towel,,14.49
+345,Blanket,,12.57
+346,Coasters,,37.18
+347,Vase,,40.58
+348,Curtains,,18.17
+349,Shades,,8.84
+350,Tools,,5.28
+351,Utensils,,24.26
+352,Step Ladder,,15.65
+353,Pot,,26.76
+354,Pan,,40.92
+355,Broom,,24.95
+356,Vacuum,,1.28
+357,Dustpan,,45.19
+358,Snickers,,31.19
+359,Reeses Peanut Butter Cups,,15.35
+360,Reeses Pieces,,40.30
+361,Almond Joy,,38.95
+362,Baby Ruth,,23.86
+363,Skittles,,4.94
+364,Chips,,20.57
+365,Pretzels,,0.29
+366,Chex Mix,,35.91
+367,Tortilla Chips,,27.06
+368,Mike and Ike's,,22.19
+369,Sunflower Seeds,,2.90
+370,Donuts,,2.20
+371,Mints,,2.52
+372,Cheese Balls,,6.08
+373,Starburst,,45.66
+374,Twinkies,,7.69
+375,Swedish Fish,,40.23
+376,Nerds,,21.42
+377,Twizzlers,,48.60
+378,Mounds,,33.98
+379,Triscuits,,42.81
+380,Nutter Butters,,4.85
+381,Brownies,,26.37
+382,Fruit Roll Ups,,27.72
+383,Nilla Wafers,,20.85
+384,Milky Way,,5.97
+385,Animal Crackers,,15.87
+386,Oderant,,7.31
+387,Deoderant,,13.40
+388,Tylenol,,34.77
+389,Tooth Brush,,39.58
+390,Tooth Paste,,40.58
+391,Comb,,42.52
+392,Hair Brush,,31.87
+393,Hand Sanitizer,,13.79
+394,Wet Wipes,,49.83
+395,Tissues,,17.23
+396,Perfume,,0.95
+397,Cologne,,39.92
+398,Razor,,45.72
+399,eau de toilet,,40.83
+400,Mouthwash,,49.69
+401,Sunglasses,,45.45
+402,Hair Spray,,28.83
+403,Hair ties,,8.39
+404,Hair Dryer,,32.54
+405,Electric Razor,,48.47
+406,Electric Toothbrush,,23.08
+407,Dental Floss,,45.33
+408,Band Aids,,16.49
+409,Bar Soap,,27.53
+410,Body Wash,,2.13
+411,Moisturizer,,15.92
+412,Toilet Paper,,2.85
+413,Shaving Cream,,42.78
+414,Facial Cleanser,,37.14
+415,Tweezers,,22.16
+416,Propane,,2.17
+417,Propane Accessories,,1.67
+418,Hammer,,25.73
+419,Screwdriver,,26.29
+420,Level,,10.44
+421,Trowel,,5.26
+422,Nails,,34.66
+423,Screws,,25.74
+424,Tape Measure,,14.53
+425,Hose,,19.96
+426,Rope,,6.47
+427,String line,,17.79
+428,Utility Knife,,15.92
+429,Speed Square,,17.20
+430,Wheel Barrow,,28.44
+431,Hoe,,30.76
+432,Rake,,27.33
+433,lightbulb,,40.18
+434,Shovel,,37.76
+435,Pickaxe,,11.77
+436,Spade,,26.34
+437,Sandpaper,,44.45
+438,Wrench,,24.98
+439,Pliers,,35.07
+440,Saw,,23.55
+441,Paint Brush,,28.28
+442,TV,,10.97
+443,Computer,,44.24
+444,Laptop,,47.99
+445,Monitor,,15.75
+446,Headphones,,27.77
+447,Graphics Card,,13.84
+448,Camera,,20.32
+449,Keyboard,,16.50
+450,Mouse,,13.51
+451,Speakers,,27.93
+452,Phone,,28.26
+453,Light Strip,,49.58
+454,Microphone,,18.12
+455,Gaming System,,19.30
+456,SquareHole Gaming System,,45.54
+457,Printer,,15.71
+458,CPU,,17.81
+459,GPS,,10.45
+460,Ram Sticks,,17.00
+461,MotherBoard,,15.52
+462,Microsoft Office,,8.74
+463,Tablet,,34.96
+464,Virtual Reality Headset,,38.47
+465,Hard Drive,,27.55
+466,Ethernet Cable,,44.76
+467,Surge Protectors,,12.37
