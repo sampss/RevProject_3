@@ -1,5 +1,6 @@
 import java.sql.{Connection, DriverManager}
 import java.sql.{Connection, DriverManager, ResultSet, SQLException, Statement}
+import java.util.Properties
 //import scala.collection._
 import scala.io._
 import scala.language.postfixOps
@@ -10,6 +11,7 @@ import java.util.Date
 import scala.collection.mutable._
 import java.time._
 import scala.util.Random
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 object Generator {
 
@@ -18,15 +20,15 @@ object Generator {
     var presets = Map(
       "minNumSales" -> "1000", // minimum number of records allowed
       "startDate" -> "1980,1,1", // start date of sales
-      "endDate" -> "1981,1,1", // end date of sales
+      "endDate" -> "2000,1,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
 
     // some default values
     // default path to current csv file
     val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\"
-    val path1 = path + "customers.csv"
-    val path2 = path + "testProducts.csv"
+    val path1 = path + "customer.csv"
+    val path2 = path + "product.csv"
 
     getCSVFiles(presets, path1, path2)
 
@@ -137,7 +139,7 @@ object Generator {
         // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
         val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
         // set price of product to price of product plus generated qty
-        val price = (product(3).toDouble * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
+        val price = (product(3) * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
         // set current dateTime
         val dateTime = currentDatePointer
         // generate website ordered from at random
@@ -175,7 +177,10 @@ object Generator {
         thisSale ++= "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
         thisSale ++= "\"failure_reason\":\"" + failureReason + "\"}"
 
-        //println(thisSale.toString)
+        println("//-------------------------------------------------------------------------------------------------")
+        println(thisSale.toString)
+        producerFunc(thisSale.toString)
+
 
         // Update Necessary Items
         orderId += 1
@@ -183,7 +188,7 @@ object Generator {
       }
     }
     val endTime = LocalDateTime.now()
-    //println(count)
+    println(count)
     //println(startTime +" : " + endTime)
     //println(presets("minRecordsPerDay"))
   }
@@ -253,6 +258,29 @@ object Generator {
     }
   }
 
+
+  def producerFunc(stringToSend:String)
+  {
+    println("producer Ran")
+    val props:Properties = new Properties()
+    props.put("bootstrap.servers","localhost:9092")
+    props.put("key.serializer",
+      "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("value.serializer",
+      "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("acks","all")
+    val producer = new KafkaProducer[String, String](props)
+    val topic = "test_topic"
+
+    try {
+      val record1 = new ProducerRecord[String, String](topic,stringToSend)
+      val metadata1 = producer.send(record1)
+    }catch{
+      case e:Exception => e.printStackTrace()
+    }finally {
+      producer.close()
+    }
+  }
 
 
 
