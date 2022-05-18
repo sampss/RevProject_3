@@ -179,7 +179,7 @@ object Generator {
 
         println("//-------------------------------------------------------------------------------------------------")
         println(thisSale.toString)
-        producerFunc(thisSale.toString)
+        //producerFunc(thisSale.toString)
 
 
         // Update Necessary Items
