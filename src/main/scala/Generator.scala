@@ -20,30 +20,105 @@ object Generator {
     var presets = Map(
       "minNumSales" -> "1000", // minimum number of records allowed
       "startDate" -> "1980,1,1", // start date of sales
-      "endDate" -> "2000,1,1", // end date of sales
+      "endDate" -> "1980,6,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
 
+    val trends = List(
+      List("","",""),
+      List("","","")
+    )
+
+    // List( List("trend setter", "trend effect","percent chance"), List() )
+
     // some default values
     // default path to current csv file
-    val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\"
+    //val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\" // path for windows, IntelliJ
+    val path = "/mnt/c/Users/samps/IdeaProjects/RevProject_3/src/resources/"  // path for ubuntu in windows
     val path1 = path + "customer.csv"
     val path2 = path + "product.csv"
 
-    getCSVFiles(presets, path1, path2)
+    // get the records from csv and save them in a variable, Also gets the column names from csv files
+    val csvInfo = getCSVFiles(presets, path1, path2) // returns List[List[List[String]]]
+
+    // if we are not passing any arguments in the command line, do the default action
+    if (args.isEmpty ) {
+
+      // set the start date to preset date if set, otherwise set date to current date
+      val startDate = {
+        if (presets("startDate") != "") {
+          dateWorker(presets, "startDate")
+        } else {
+          LocalDate.now()
+        }
+      }
+      // set end date value, ' need to make if equal to or greater than start iggy and keep running '
+      val endDate = {
+        if (presets("endDate") != "") {
+          dateWorker(presets, "endDate")
+        } else {
+          LocalDate.now()
+        }
+      }
+      // calculate number of days to run sales events
+      // set a current pointer to update the date of each sale
+      var currentDatePointer = startDate
+      var salesPeriod = (endDate.toEpochDay - startDate.toEpochDay).toInt
+      //  set min records per day to meet the criteria if minNumSales is set
+      if (presets("minNumSales") != "") {
+        presets("minRecordsPerDay") = math.ceil(presets("minNumSales").toFloat / salesPeriod.toFloat).toInt.toString
+      }
+      //  set up sales id variable to track sales Id number that is generated
+      var orderId = 0
+      // holds the count of records produces
+      var count = 0
+
+      // loop to generate sales per day as per presets
+      for (x <- 0 to salesPeriod) {
+        for (y <- 0 to presets("minRecordsPerDay").toInt) {
+
+          // to text how many sales records are created
+          count = count + 1
+
+          // pass in the proper info in the correct format and run create sales event
+          val sale = createSaleEvent(presets,trends, currentDatePointer,orderId, csvInfo.head, csvInfo(1),csvInfo(2).head,csvInfo(3).head)
+
+          // use sleep to slow down the stream to kafka
+          //Thread.sleep(50)
+          //println("//-------------------------------------------------------------------------------------------------")
+          //println(sale.toString)
+          producerFunc(sale.toString)
+
+          // Update Necessary Items
+          orderId += 1
+          currentDatePointer = currentDatePointer.plusDays(1)
+        }
+      }
+      val endTime = LocalDateTime.now()
+      //println(count)
+      //println(startTime +" : " + endTime)
+      //println(presets("minRecordsPerDay"))
+
+
+    }
+
+    // set a while run function here to run as long as it is true for continuous loop
+
 
   }
 
-  def getCSVFiles(presets: Map[String, String], filePath1: String = "", filePath2: String = ""): Unit = {
+  def getCSVFiles(presets: Map[String, String], filePath1: String = "", filePath2: String = ""):List[List[List[String]]] = {  //List[List[List[String]]]
 
     val customerFile = Source.fromFile(filePath1)
     val productFile = Source.fromFile(filePath2)
     // create column header for customers
     val customerColumnsSrc = customerFile.getLines.take(1).toList
     val customerColumns = customerColumnsSrc(0).split(",").toList // create list of customer columns
+    val matchTypeCustomerColumns = List(customerColumns) // just matching type for return purposes
     // create column header for products
     val productColumnsSrc = productFile.getLines.take(1).toList
     val productColumns = productColumnsSrc(0).split(",").toList // create list of product columns
+    val matchTypeProductColumns = List(productColumns) // just matching for return purposes
     // get remaining lines from csv to create data table
     val customerData = customerFile.getLines.toList
     val productData = productFile.getLines.toList
@@ -51,8 +126,13 @@ object Generator {
     val customerValuesTable = buildList(customerData)
     val productValuesTable = buildList(productData)
 
+    val returnValue = List(customerValuesTable,productValuesTable,matchTypeCustomerColumns,matchTypeProductColumns)
     // handoff to build sales event function to build the sales event and pass each built sale to the producer
-    createSaleEvent(presets, customerValuesTable, productValuesTable, customerColumns, productColumns) // may change order of this in the future, to send to producer then producer func calls create sales event?
+    //createSaleEvent(presets, customerValuesTable, productValuesTable, customerColumns, productColumns) // may change order of this in the future, to send to producer then producer func calls create sales event?
+
+    //println(returnValue)
+    returnValue
+
 
   }
 
@@ -67,7 +147,7 @@ object Generator {
     return tempList.toList
   }
 
-  def createSaleEvent(presets: Map[String, String], customerData: List[List[String]], productData: List[List[String]], customerColumnHeader: List[String], productColumnHeader: List[String]): Unit = {
+  def createSaleEvent(presets: Map[String, String],trends:List[List[String]], currentDatePointer:LocalDate,orderId:Int, customerData: List[List[String]], productData: List[List[String]], customerColumnHeader: List[String], productColumnHeader: List[String]):String = {
 
     // setup default payment types
     val paymentTypes = List("debit card", "credit card", "internet banking", "upi", "wallet")
@@ -87,110 +167,79 @@ object Generator {
       "vis4vegan.com" -> "Fruits, Beverages, Baby Food, Vegetables, Snacks"
     )
     val websiteNames = websites.keys.toList
-    // set the start date to preset date if set, otherwise set date to current date
-    val startDate = {
-      if (presets("startDate") != "") {
-        dateWorker(presets, "startDate")
-      } else {
-        LocalDate.now()
-      }
-    }
-    // set end date value, ' need to make if equal to or greater than start iggy and keep running '
-    val endDate = {
-      if (presets("endDate") != "") {
-        dateWorker(presets, "endDate")
-      } else {
-        LocalDate.now()
-      }
-    }
-    // set a current pointer to update the date of each sale
-    var currentDatePointer = startDate
-    // calculate number of days to run sales events
-    var salesPeriod = (endDate.toEpochDay - startDate.toEpochDay).toInt
-    //  set up sales id variable to track sales Id number that is generated
-    var orderId = 0
-    //  set min records per day to meet the criteria if minNumSales is set
-    if (presets("minNumSales") != "") {
-      presets("minRecordsPerDay") = math.ceil(presets("minNumSales").toFloat / salesPeriod.toFloat).toInt.toString
-    }
     // setup default string variable to
     var thisSale = new StringBuilder("")
-
-
     // set a time and count for records to see how long and how many records produced.
     val startTime = LocalDateTime.now()
-    var count = 0
-    // temporary loop to see all moving parts just to create a list of 20 years data 3 sales per day
+
+    // need a trend list filter...  some way to filter through the trends
+    // randomly select trend from trend list
+/*    val trendItem = trends(Random.nextInt())
+
+    if( trendItem(0) == "costumer"){
+
+    }else if( trendItem(0) == "product"){
+
+    }else if( trendItem(0) == "payment_type"){
+
+    }else if( trendItem(0) == "")*/
 
 
-    for (x <- 0 to salesPeriod) {
-      for (y <- 0 to presets("minRecordsPerDay").toInt) {
-        // to text how many sales records are created
-        count = count + 1
-        // ---------------------    This section may be moved to other function     -----------------------------
-
-        // generate random customer
-        val customer = customerData(Random.nextInt(customerData.length))
-        // generate random product
-        val product = productData(Random.nextInt(productData.length))
-
-        // payment_type
-        val paymentType = paymentTypes(Random.nextInt(paymentTypes.length))
-        // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
-        val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
-        // set price of product to price of product plus generated qty
-        val price = (product(3) * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
-        // set current dateTime
-        val dateTime = currentDatePointer
-        // generate website ordered from at random
-        val website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
-        // setup transaction Id -- to be unique, used orderId and Date
-        val paymentTxnId = s"${orderId}${currentDatePointer.toEpochDay}"
-        // generate random failure rate - set failure rate to 20% in this example
-        val paymentTxnSuccess = if (Random.nextInt(100) > 20) {
-          "pass"
-        } else {
-          "fail"
-        }
-        // setup basic failure reason
-        val failureReason = if (paymentTxnSuccess == "fail") {
-          failureReasons(Random.nextInt(failureReasons.length))
-        } else {
-          ""
-        }
-
-        // ---------- Build JSON Section -----------//
-        thisSale ++= "{\"order_id\":\"" + orderId + "\", "
-        thisSale ++= "\"" + customerColumnHeader(0) + "\":\"" + customer(0) + "\", "
-        thisSale ++= "\"" + customerColumnHeader(1) + "\":\"" + customer(1) + "\", "
-        thisSale ++= "\"" + productColumnHeader(0) + "\":\"" + product(0) + "\", "
-        thisSale ++= "\"" + productColumnHeader(1) + "\":\"" + product(1) + "\", "
-        thisSale ++= "\"" + productColumnHeader(2) + "\":\"" + product(2) + "\", "
-        thisSale ++= "\"payment_type\":\"" + paymentType + "\", "
-        thisSale ++= "\"qty\":\"" + qty.toString + "\", "
-        thisSale ++= "\"price\":\"" + price + "\", "
-        thisSale ++= "\"datetime\":\"" + dateTime.toString + "\", "
-        thisSale ++= "\"" + customerColumnHeader(2) + "\":\"" + customer(2) + "\", "
-        thisSale ++= "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
-        thisSale ++= "\"ecommerce_website_name\":\"" + website + "\", "
-        thisSale ++= "\"payment_txn_id\":\"" + paymentTxnId + "\", "
-        thisSale ++= "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
-        thisSale ++= "\"failure_reason\":\"" + failureReason + "\"}"
-
-        println("//-------------------------------------------------------------------------------------------------")
-        println(thisSale.toString)
-        //producerFunc(thisSale.toString)
 
 
-        // Update Necessary Items
-        orderId += 1
-        currentDatePointer = currentDatePointer.plusDays(1)
-      }
+
+    // ---------------------    This section may be moved to other function     -----------------------------
+
+    // generate random customer
+    val customer = customerData(Random.nextInt(customerData.length))
+    // generate random product
+    val product = productData(Random.nextInt(productData.length))
+
+    // payment_type
+    val paymentType = paymentTypes(Random.nextInt(paymentTypes.length))
+    // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
+    val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
+    // set price of product to price of product plus generated qty
+    val price = (product(3) * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
+    // set current dateTime
+    val dateTime = currentDatePointer
+    // generate website ordered from at random
+    val website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
+    // setup transaction Id -- to be unique, used orderId and Date
+    val paymentTxnId = s"${orderId}${currentDatePointer.toEpochDay}"
+    // generate random failure rate - set failure rate to 20% in this example
+    val paymentTxnSuccess = if (Random.nextInt(100) > 20) {
+      "pass"
+    } else {
+      "fail"
     }
-    val endTime = LocalDateTime.now()
-    println(count)
-    //println(startTime +" : " + endTime)
-    //println(presets("minRecordsPerDay"))
+    // setup basic failure reason
+    val failureReason = if (paymentTxnSuccess == "fail") {
+      failureReasons(Random.nextInt(failureReasons.length))
+    } else {
+      ""
+    }
+
+    // ---------- Build JSON Section -----------//
+    thisSale ++= "{\"order_id\":\"" + orderId + "\", "
+    thisSale ++= "\"" + customerColumnHeader(0) + "\":\"" + customer(0) + "\", "
+    thisSale ++= "\"" + customerColumnHeader(1) + "\":\"" + customer(1) + "\", "
+    thisSale ++= "\"" + productColumnHeader(0) + "\":\"" + product(0) + "\", "
+    thisSale ++= "\"" + productColumnHeader(1) + "\":\"" + product(1) + "\", "
+    thisSale ++= "\"" + productColumnHeader(2) + "\":\"" + product(2) + "\", "
+    thisSale ++= "\"payment_type\":\"" + paymentType + "\", "
+    thisSale ++= "\"qty\":\"" + qty.toString + "\", "
+    thisSale ++= "\"price\":\"" + price + "\", "
+    thisSale ++= "\"datetime\":\"" + dateTime.toString + "\", "
+    thisSale ++= "\"" + customerColumnHeader(2) + "\":\"" + customer(2) + "\", "
+    thisSale ++= "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
+    thisSale ++= "\"ecommerce_website_name\":\"" + website + "\", "
+    thisSale ++= "\"payment_txn_id\":\"" + paymentTxnId + "\", "
+    thisSale ++= "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
+    thisSale ++= "\"failure_reason\":\"" + failureReason + "\"}"
+
+    thisSale.toString
+
   }
 
   def trendCreator(): Unit = { // run a function to determine what trends need applied to the sale that is generated.
@@ -263,7 +312,7 @@ object Generator {
   {
     println("producer Ran")
     val props:Properties = new Properties()
-    props.put("bootstrap.servers","localhost:9092")
+    props.put("bootstrap.servers","172.27.67.167:9092")
     props.put("key.serializer",
       "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer",

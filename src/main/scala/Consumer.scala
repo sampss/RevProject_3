@@ -11,12 +11,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
 
 //Spark Libraries
-import org.apache.spark.sql._
+//import org.apache.spark.sql._
 
 //Play Libraries for Json
 import play.api.libs.json._
 
-object Consumer extends App {
+object Consumer {
 
   val topicName = "test_topic"   //I DON'T KNOW WHAT THE TOPIC NAME IS GOING TO BE SO MAKE SURE TO CHANGE IT
 
