@@ -95,6 +95,7 @@ object Generator {
         }
       }
       val endTime = LocalDateTime.now()
+      //
       //println(count)
       //println(startTime +" : " + endTime)
       //println(presets("minRecordsPerDay"))
