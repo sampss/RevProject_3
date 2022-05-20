@@ -135,7 +135,7 @@ product_id,product_name,product_category,price
 134,Celery,Vegetables,30.17
 135,Garden orache,Vegetables,9.13
 136,Bank cress,Vegetables,20.99
-137,"Chik-nam, Kra don",Vegetables,18.02
+137,Chik-nam Kra don,Vegetables,18.02
 138,Indian spinach,Vegetables,11.74
 139,Chard,Vegetables,7.33
 140,Sea Beet,Vegetables,16.87
@@ -162,7 +162,7 @@ product_id,product_name,product_category,price
 161,Harebell,Vegetables,44.93
 162,Caper,Vegetables,2.71
 163,Wild Coxcomb,Vegetables,48.67
-164,"Asian pennywort, Gotukola",Vegetables,36.64
+164,Asian pennywort Gotukola,Vegetables,36.64
 165,Lamb's Quarters,Vegetables,3.26
 166,American Wormseed,Vegetables,40.11
 167,Southern Huauzontle,Vegetables,10.83
