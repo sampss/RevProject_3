@@ -1,6 +1,7 @@
 import java.sql.{Connection, DriverManager}
 import java.sql.{Connection, DriverManager, ResultSet, SQLException, Statement}
 import java.util.Properties
+import scala.collection.mutable
 //import scala.collection._
 import scala.io._
 import scala.language.postfixOps
@@ -19,22 +20,22 @@ object Generator {
 
     var presets = Map(
       "minNumSales" -> "1000", // minimum number of records allowed
-      "startDate" -> "1980,1,1", // start date of sales
-      "endDate" -> "1980,6,1", // end date of sales
+      "startDate" -> "2020,1,1", // start date of sales
+      "endDate" -> "2021,6,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
 
     val trends = List(
-      List("","",""),
-      List("","","")
-    )
+      //Map("trendSetter" -> "customer", "setterValue" -> "India", "trendEffect" -> "product", "effectValue" -> "Fruits", "percentModifier" -> "30")
+      Map("trendSetter" -> "product", "setterValue" -> "Meat", "trendEffect" -> "customer", "effectValue" -> "India", "percentModifier" -> "30")
+    )//Deangelo Nonroe, India
 
-    // List( List("trend setter", "trend effect","percent chance"), List() )
+    // List( List( "trend setter", "setter contains", "trend effect", "effect contains, "percent chance"))
 
     // some default values
     // default path to current csv file
-    //val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\" // path for windows, IntelliJ
-    val path = "/mnt/c/Users/samps/IdeaProjects/RevProject_3/src/resources/"  // path for ubuntu in windows
+    val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\" // path for windows, IntelliJ
+    //val path = "/mnt/c/Users/samps/IdeaProjects/RevProject_3/src/resources/"  // path for ubuntu in windows
     val path1 = path + "customer.csv"
     val path2 = path + "product.csv"
 
@@ -86,8 +87,8 @@ object Generator {
           // use sleep to slow down the stream to kafka
           //Thread.sleep(50)
           //println("//-------------------------------------------------------------------------------------------------")
-          //println(sale.toString)
-          producerFunc(sale.toString)
+          println(sale.toString)
+          //producerFunc(sale.toString)
 
           // Update Necessary Items
           orderId += 1
@@ -95,7 +96,7 @@ object Generator {
         }
       }
       val endTime = LocalDateTime.now()
-      //
+
       //println(count)
       //println(startTime +" : " + endTime)
       //println(presets("minRecordsPerDay"))
@@ -148,7 +149,7 @@ object Generator {
     return tempList.toList
   }
 
-  def createSaleEvent(presets: Map[String, String],trends:List[List[String]], currentDatePointer:LocalDate,orderId:Int, customerData: List[List[String]], productData: List[List[String]], customerColumnHeader: List[String], productColumnHeader: List[String]):String = {
+  def createSaleEvent(presets: Map[String, String],trends:List[Map[String,String]], currentDatePointer:LocalDate,orderId:Int, customerData: List[List[String]], productData: List[List[String]], customerColumnHeader: List[String], productColumnHeader: List[String]):String = {
 
     // setup default payment types
     val paymentTypes = List("debit card", "credit card", "internet banking", "upi", "wallet")
@@ -156,70 +157,92 @@ object Generator {
     val failureReasons = List("Insufficient Funds", "Invalid Input", "Connection Error")
     // setup default websites
     val websites = Map(
-      "gogogrocery.com" -> "Fruits, Beverages, Baby Food, Vegetables, Cereal, Meat, Snacks ",
-      "thehardstore.net" -> "Hardware, Household, Office Supplies, Clothes",
-      "EGad-get.com" -> "Tech_Hardware",
-      "allgoods.net" -> "",
-      "NailsNNails.com" -> "Hardware, Cosmetics, Personal Care, Clothes",
-      "memawmall.net" -> "Clothes, Cosmetics, Household, Snacks, Personal Care",
-      "onfice.com" -> "Tech_Hardware, Office Supplies",
-      "discodiscount.com" -> "Cosmetics, Clothes, Entertainment_Technology",
-      "petesbigbutcher.net" -> "Meat, Clothes, Snacks",
-      "vis4vegan.com" -> "Fruits, Beverages, Baby Food, Vegetables, Snacks"
+      "gogogrocery.com" -> List("Fruits", "Beverages", "Baby Food", "Vegetables", "Cereal", "Meat", "Snacks"),
+      "thehardstore.net" -> List("Hardware", "Household", "Office Supplies", "Clothes"),
+      "EGad-get.com" -> List("Tech_Hardware"),
+      "NailsNNails.com" -> List("Hardware", "Cosmetics", "Personal Care", "Clothes"),
+      "allgoods.net" -> List("Fruits", "Beverages", "Baby Food", "Vegetables", "Cereal", "Meat", "Snacks","Tech_Hardware"),
+      "memawmall.net" -> List("Clothes", "Cosmetics", "Household", "Snacks", "Personal Care"),
+      "onfice.com" -> List("Tech_Hardware", "Office Supplies"),
+      "discodiscount.com" -> List("Cosmetics", "Clothes", "Entertainment_Technology"),
+      "petesbigbutcher.net" -> List("Meat", "Clothes", "Snacks"),
+      "vis4vegan.com" -> List("Fruits", "Beverages", "Baby Food", "Vegetables", "Snacks")
     )
     val websiteNames = websites.keys.toList
+    // testing pulling the sites that contains specific types of goods.
+    //val test = websites.collect{ case x if x._2.contains("Clothes") => x._1 }.toList
+    //println(test)
     // setup default string variable to
     var thisSale = new StringBuilder("")
     // set a time and count for records to see how long and how many records produced.
     val startTime = LocalDateTime.now()
 
-    // need a trend list filter...  some way to filter through the trends
-    // randomly select trend from trend list
-/*    val trendItem = trends(Random.nextInt())
-
-    if( trendItem(0) == "costumer"){
-
-    }else if( trendItem(0) == "product"){
-
-    }else if( trendItem(0) == "payment_type"){
-
-    }else if( trendItem(0) == "")*/
-
-
-
-
-
-    // ---------------------    This section may be moved to other function     -----------------------------
+    //------- Other Preset Variables that are modified in the if else statement --------//
 
     // generate random customer
-    val customer = customerData(Random.nextInt(customerData.length))
+    var customer = customerData(Random.nextInt(customerData.length))
     // generate random product
-    val product = productData(Random.nextInt(productData.length))
-
+    var product = productData(Random.nextInt(productData.length))
     // payment_type
-    val paymentType = paymentTypes(Random.nextInt(paymentTypes.length))
+    var paymentType = paymentTypes(Random.nextInt(paymentTypes.length))
     // select quantity between 1 and 100 - default 1-30, 50% - 31-65, 35% - 66-100, 15%
-    val qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
+    var qty = selectQty() // can add logic to update or change the range later format List(List(percentChance Int, highestValueWithThisPercent Int))
     // set price of product to price of product plus generated qty
-    val price = (product(3) * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
+    var price = (product(3) * qty).toString.replaceAll("(?<=\\d\\.\\d{2}).*", "")
     // set current dateTime
-    val dateTime = currentDatePointer
+    var dateTime = currentDatePointer
     // generate website ordered from at random
-    val website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
+    var website = websiteNames(Random.nextInt(websiteNames.length)).toString // store as string so can be used to call other info
     // setup transaction Id -- to be unique, used orderId and Date
-    val paymentTxnId = s"${orderId}${currentDatePointer.toEpochDay}"
+    var paymentTxnId = s"${orderId}${currentDatePointer.toEpochDay}"
     // generate random failure rate - set failure rate to 20% in this example
-    val paymentTxnSuccess = if (Random.nextInt(100) > 20) {
+    var paymentTxnSuccess = if (Random.nextInt(100) > 5) {
       "pass"
     } else {
       "fail"
     }
     // setup basic failure reason
-    val failureReason = if (paymentTxnSuccess == "fail") {
+    var failureReason = if (paymentTxnSuccess == "fail") {
       failureReasons(Random.nextInt(failureReasons.length))
     } else {
       ""
     }
+
+    // ------------------------------------------------------------------------------//
+    // randomly select trend from trend list
+    val trendItem = trends(Random.nextInt(trends.length))
+
+/*    var dataSet = {
+      trendItem("trendSetter") match {
+        case "customer" => customerData
+        case "product" => productData
+      } }
+    //val baseTrend = baseTrendCreator()
+    println(baseTrendCreator( trendItem, dataSet ))*/
+
+    if( trendItem("trendSetter") == "customer"){
+
+      customer = customerTrend(trendItem("setterValue"),customerData)
+
+
+    }else if( trendItem("trendSetter") == "product"){
+
+      product = productTrend(trendItem("setterValue"),productData)
+
+      if( trendItem("trendEffect") == "customer"){
+       customer = customerTrend(trendItem("effectValue"), customerData, trendItem("percentModifier"))
+      }
+
+    }else if( trendItem("trendSetter") == "payment_type"){
+
+    }else if( trendItem("trendSetter") == ""){
+    }else{}
+
+
+
+
+
+
 
     // ---------- Build JSON Section -----------//
     thisSale ++= "{\"order_id\":\"" + orderId + "\", "
@@ -243,12 +266,8 @@ object Generator {
 
   }
 
-  def trendCreator(): Unit = { // run a function to determine what trends need applied to the sale that is generated.
-    //val trendList = List(List("customerData", "productData", "percentage1", "percentage 2",))
-
-  }
-
-  def selectQty(rangeList: List[List[Int]] = List(List(50, 30), List(35, 65), List(15, 100))): Int = {
+  // purchase quantity selector
+  def selectQty( rangeList: List[List[Int]] = List(List(50, 30), List(35, 65), List(15, 100))): Int = {
 
     // set a top temp range to account for someone adding more than 100% in the list
     var topTmpRng = 0
@@ -268,19 +287,19 @@ object Generator {
       if ( x == 0 ) { rngStep = rangeList(x)(0)}
 
       //println(x + " : " + tmpRng + " : " + rangeList(x)(0) + " : " + highQty + " : " + rngStep )
-      if (x == 0 && tmpRng <= rangeList(x)(0) ) {
+      if ( x == 0 && tmpRng <= rangeList(x)(0) ) {
         lowQty = 1
         highQty = rangeList(x)(1) + 1  // add one on high qty to make it include the top number
         //println(lowQty + " : " + highQty)
       }
-      if (x != 0 && tmpRng <= rngStep && highQty == 0 ) {
+      if ( x != 0 && tmpRng <= rngStep && highQty == 0 ) {
         lowQty = rangeList(x-1)(1) + 1  // inclusive add one to step 1 past previous top number
         highQty = rangeList(x)(1) + 1 // exclusive top range, add one to include final top number
         //println(lowQty + " : " + highQty)
       }
 
       // if not the end of the list add next rngStep to previous
-      if (x != rangeList.length -1 ){ rngStep = rngStep + rangeList(x+1)(0) }
+      if ( x != rangeList.length -1 ){ rngStep = rngStep + rangeList(x+1)(0) }
 
     }
 
@@ -290,7 +309,7 @@ object Generator {
   }
 
 
-// worker to set dates if defined
+  // worker to set dates if defined
   def dateWorker(presets:Map[String,String], varName:String ):LocalDate ={
     if ( varName == "startDate" ) {
       val startDateList = presets("startDate").split(",").toList
@@ -309,8 +328,7 @@ object Generator {
   }
 
 
-  def producerFunc(stringToSend:String)
-  {
+  def producerFunc(stringToSend:String) {
     println("producer Ran")
     val props:Properties = new Properties()
     props.put("bootstrap.servers","172.27.67.167:9092")
@@ -331,6 +349,121 @@ object Generator {
       producer.close()
     }
   }
+
+  //-------------   Trend Functions  ----------------//
+
+  def baseTrendCreator(trendItem:Map[String,String], dataSet:List[List[String]] ):List[List[String]] = {
+
+    var returnData = new ListBuffer[List[String]]
+
+    if( trendItem("trendSetter") == "customer"){
+
+      val tmpData = customerTrend(trendItem("setterValue"),dataSet)
+      returnData.append( tmpData )
+      //println(returnData)
+
+    }else if( trendItem("trendSetter") == "product"){
+
+      val tmpData = productTrend(trendItem("setterValue"),dataSet)
+      returnData.append( tmpData )
+      //println(returnData)
+      //if( trendItem("effect"))
+
+    }else if( trendItem("trendSetter") == "payment_type"){
+
+    }else if( trendItem("trendSetter") == ""){
+    }else{}
+
+    returnData.toList
+
+  }
+
+  def customerTrend(trendValue:String, customerData:List[List[String]], percentChance:String = "" ):List[String] = {
+
+    var customerListBuilder = new ListBuffer[List[String]]
+
+    // if customer is the trend setter percent will be null, select customers with trendValue into list and randomly select the customer from that list
+    if ( percentChance == "" ){
+      for( x <- 0 until customerData.length ){
+        // println(customerData(x))
+        if( customerData(x).contains(trendValue)){
+          customerListBuilder.append(customerData(x))
+        }
+      }
+    }else{
+      // If percent exists use the percent
+      var selectedListItems = new ListBuffer[List[String]]
+      var nonSelectedListItems = new ListBuffer[List[String]]
+      // seperate out items that meet the effect and dont
+      for( x <- 0 until customerData.length ) {
+          if( customerData(x).contains(trendValue)){
+            selectedListItems.append(customerData(x))
+          }else{ nonSelectedListItems.append(customerData(x)) }
+      }
+      // if list is shorter than percent chance
+      if( selectedListItems.length < percentChance.toInt && selectedListItems.nonEmpty ){
+        val rng = percentChance.toInt - selectedListItems.length
+        // if there is less list items that meet the criteria add repeat items until percent is met
+        for( x <- 0 until rng ){
+          val rndItem = selectedListItems(Random.nextInt(selectedListItems.length))
+          selectedListItems.append(rndItem)
+        }
+        // else it is percent chance is equal or greater just take the number you need
+      }else{
+        selectedListItems = selectedListItems.take(percentChance.toInt)
+      }
+      // do the same for nonSelectedItems to make sure the size is proper
+      //Set a difference to get just the number of items that will add up to 100 for percent purposes
+      val percentDiff = 100 - percentChance.toInt
+
+      if( nonSelectedListItems.length < percentDiff && nonSelectedListItems.nonEmpty ){
+
+        for( x <- 0 until percentDiff ){
+          val rndItem = nonSelectedListItems(Random.nextInt(nonSelectedListItems.length))
+          nonSelectedListItems.append(rndItem)
+        }
+
+      }else{
+        nonSelectedListItems = nonSelectedListItems.take(percentDiff)
+      }
+
+      val combinedLists = selectedListItems ++ nonSelectedListItems
+      customerListBuilder = combinedLists
+
+    }
+
+    val customerList = customerListBuilder.toList
+    val customer = customerList(Random.nextInt(customerList.length))
+
+    customer
+  }
+
+  def productTrend( trendValue:String, productData:List[List[String]], percentChance:String = "" ):List[String] = {
+
+    var productListBuilder = new ListBuffer[List[String]]
+
+    // if product is the trend setter percent will be null, select product with trendValue into list and randomly select the product from that list
+    if ( percentChance == "" ){
+      for( x <- 0 until productData.length ){
+        // println(customerData(x))
+        if( productData(x).contains(trendValue)){
+          productListBuilder.append(productData(x))
+        }
+      }
+    }else{
+      println("productTrend Else Ran")
+    }
+
+    //println(productListBuilder)
+
+    val productList = productListBuilder.toList
+    val product = productList(Random.nextInt(productList.length))
+
+    product
+
+  }
+
+  def pmtTypeTrend(){}
 
 
 

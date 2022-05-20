@@ -13,3 +13,18 @@ personal care 386-415
 Hardware 416-441
 tech Hardware 442-467
 
+
+Fruits
+Beverages
+Baby Food
+Vegetables
+Clothes
+Cereal
+Cosmetics
+Meat
+Office Supplies
+Household
+Snacks
+Personal Care
+Hardware
+Tech Hardware
