@@ -40,8 +40,8 @@ object Generator {
 
     // some default values
     // default path to current csv file
-    val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\" // path for windows, IntelliJ
-    //val path = "/mnt/c/Users/samps/IdeaProjects/RevProject_3/src/resources/"  // path for ubuntu in windows
+    //val path = "C:\\Users\\samps\\IdeaProjects\\RevProject_3\\src\\resources\\" // path for windows, IntelliJ
+    val path = "/mnt/c/Users/samps/IdeaProjects/RevProject_3/src/resources/"  // path for ubuntu in windows
     val path1 = path + "customer.csv"
     val path2 = path + "product.csv"
 
@@ -93,8 +93,8 @@ object Generator {
           // use sleep to slow down the stream to kafka
           //Thread.sleep(50)
           //println("//-------------------------------------------------------------------------------------------------")
-          println(sale.toString)
-          //producerFunc(sale.toString)
+          //println(sale.toString)
+          producerFunc(sale.toString)
 
           // Update Necessary Items
           orderId += 1
@@ -373,28 +373,6 @@ object Generator {
   }
 
 
-  def producerFunc(stringToSend:String) {
-    println("producer Ran")
-    val props:Properties = new Properties()
-    props.put("bootstrap.servers","172.27.67.167:9092")
-    props.put("key.serializer",
-      "org.apache.kafka.common.serialization.StringSerializer")
-    props.put("value.serializer",
-      "org.apache.kafka.common.serialization.StringSerializer")
-    props.put("acks","all")
-    val producer = new KafkaProducer[String, String](props)
-    val topic = "test_topic"
-
-    try {
-      val record1 = new ProducerRecord[String, String](topic,stringToSend)
-      val metadata1 = producer.send(record1)
-    }catch{
-      case e:Exception => e.printStackTrace()
-    }finally {
-      producer.close()
-    }
-  }
-
   //-------------   Trend Functions  ----------------//
 
 
@@ -546,8 +524,28 @@ object Generator {
     combinedLists
 
   }
+// ---------- PRODUCER FUNCTION --------------//
+  def producerFunc(stringToSend:String) {
+    //println("producer Ran")
+    val props:Properties = new Properties()
+    props.put("bootstrap.servers","172.27.67.167:9092")
+    props.put("key.serializer",
+      "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("value.serializer",
+      "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("acks","all")
+    val producer = new KafkaProducer[String, String](props)
+    val topic = "test_topic"
 
-
+    try {
+      val record1 = new ProducerRecord[String, String](topic,stringToSend)
+      val metadata1 = producer.send(record1)
+    }catch{
+      case e:Exception => e.printStackTrace()
+    }finally {
+      producer.close()
+    }
+  }
 
 }
 
