@@ -5,7 +5,7 @@ import java.sql.DriverManager
 import java.sql.Connection
 
 //Scala Libraries
-import scala.collection.JavaConvertors._
+import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
 //Kafka Libraries
@@ -38,7 +38,7 @@ object Consumer {
   import spark.implicits._
 
   def consumer(database:String, username:String, password:String, topic:String = "test_topic"):Unit = {
-    import spark.SqlContext.implicits._
+    import spark.sqlContext.implicits._
 
     val props = new Properties()
     props.put("boostrap.servers", "localhost:9092")
@@ -57,7 +57,7 @@ object Consumer {
     while(true) {
       
       var records = cons.poll(100)
-      var jsonSeq = new ListBuffer[String]()
+      var jsonSeq = Seq[String]()
 
       for(record <- records.asScala) {
 
@@ -66,7 +66,7 @@ object Consumer {
         var jsonRow:JsValue = Json.parse(recordString)
         println(jsonRow)
 
-        jsonSeq += recordString
+        jsonSeq :+ recordString
       }
 
       if(jsonSeq.nonEmpty && jsonSeq.size > 100) {
@@ -89,12 +89,12 @@ object Consumer {
           .option("user", username)
           .option("password", password)
           .mode("append").save()
+        
+        jsonSeq = Seq[String]()
       }
     }
 
     cons.close()
-
-    consumer(topic)
 
   }
 }
