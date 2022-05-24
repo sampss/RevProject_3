@@ -20,9 +20,9 @@ object Generator {
   def main(args: Array[String]): Unit = {
 
     var presets = Map(
-      "minNumSales" -> "1000", // minimum number of records allowed
+      "minNumSales" -> "25000", // minimum number of records allowed
       "startDate" -> "2020,1,1", // start date of sales
-      "endDate" -> "2021,6,1", // end date of sales
+      "endDate" -> "2022,1,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
     // set trends to be randomly picked from
@@ -104,7 +104,7 @@ object Generator {
       }
       val endTime = LocalDateTime.now()
 
-      //println(count)
+      println(count)
       //println(startTime +" : " + endTime)
       //println(presets("minRecordsPerDay"))
 
