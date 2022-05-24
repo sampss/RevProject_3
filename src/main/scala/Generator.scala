@@ -282,7 +282,7 @@ object Generator {
     modifiedData.append(paymentType)
     modifiedData.append(qty.toString)
     modifiedData.append(product(1))
-    if (bdata < 90 ){
+    if (bdata < 6 ){
       if( bdata == 5 ){ modifiedData(0) = "@!#?@!" } // txnId
       if( bdata == 4 ){ modifiedData(1) = "@!#?@!" } // customer id Int
       if( bdata == 3 ){ modifiedData(2) = "" } // payment type
@@ -291,15 +291,15 @@ object Generator {
     }
 
     // ---------- Build JSON Section -----------//
-    thisSale ++= "{\"order_id\":\"" + orderId + "\", "
-    thisSale ++= "\"" + customerColumnHeader(0) + "\":\"" + modifiedData(1) + "\", "
+    thisSale ++= "{\"order_id\":" + orderId + ", "
+    thisSale ++= "\"" + customerColumnHeader(0) + "\":" + modifiedData(1) + ", "
     thisSale ++= "\"" + customerColumnHeader(1) + "\":\"" + customer(1) + "\", "
-    thisSale ++= "\"" + productColumnHeader(0) + "\":\"" + product(0) + "\", "
+    thisSale ++= "\"" + productColumnHeader(0) + "\":" + product(0) + ", "
     thisSale ++= "\"" + productColumnHeader(1) + "\":\"" + modifiedData(4) + "\", "
     thisSale ++= "\"" + productColumnHeader(2) + "\":\"" + product(2) + "\", "
     thisSale ++= "\"payment_type\":\"" + modifiedData(2) + "\", "
-    thisSale ++= "\"qty\":\"" + modifiedData(3) + "\", "
-    thisSale ++= "\"price\":\"" + price + "\", "
+    thisSale ++= "\"qty\":" + modifiedData(3) + ", "
+    thisSale ++= "\"price\":" + price + ", "
     thisSale ++= "\"datetime\":\"" + dateTime.toString + "\", "
     thisSale ++= "\"" + customerColumnHeader(2) + "\":\"" + customer(2) + "\", "
     thisSale ++= "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
