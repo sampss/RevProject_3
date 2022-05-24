@@ -95,7 +95,7 @@ object Generator {
           //Thread.sleep(50)
           //println("//-------------------------------------------------------------------------------------------------")
           //println(sale.toString)
-          producerFunc(sale.toString)
+          producerFunc(sale)
 
           // Update Necessary Items
           orderId += 1
@@ -527,9 +527,10 @@ object Generator {
   }
 // ---------- PRODUCER FUNCTION --------------//
   def producerFunc(stringToSend:String) {
-    //println("producer Ran")
+
+    println("producer Ran")
     val props:Properties = new Properties()
-    props.put("bootstrap.servers","172.27.67.167:9092")
+    props.put("bootstrap.servers","localhost:9092")
     props.put("key.serializer",
       "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer",
