@@ -69,17 +69,16 @@ object KafkaConsumerSubscribeApp2 extends App {
         //df = df.withColumn("datetime", to_timestamp(col("datetime"), "yyyy-MM-dd"))
         //df = df.withColumn("datetime", date_format(to_date(col("datetime"),"dd-MM-yyyy"),"yyyy-MM-dd"))
         //df = df.withColumn("datetime", col("datetime").cast())
+        //val df1 = df.withColumn("datetime", to_date(col("datetime"), "yyyy-MM-dd"))
+        df = df.withColumn("datetime", to_date(col("time"), "yyyy-MM-dd")).drop("time")
 
-        val df1 = df.withColumn("datetime", to_date(col("datetime"), "yyyy-MM-dd"))
 
-
-
-        df1.show()
-        df1.printSchema()
+        df.show()
+        df.printSchema()
 
 
         println("before temp table")
-        df1.createOrReplaceTempView("orders")
+        df.createOrReplaceTempView("orders")
         var df2 = spark.sql("select * from orders")
         var props2 = new Properties()
         props2.put("driver", "org.postgresql.Driver")
@@ -87,8 +86,8 @@ object KafkaConsumerSubscribeApp2 extends App {
         props2.put("password", password)
 
         df2.write.mode("append").jdbc("jdbc:postgresql://localhost:5432/"+database, table, props2)
-        println("df2 write")
-        df1.write
+        //println("df2 write")
+        df.write
           .format("jdbc")
           .option("url", "jdbc:postgresql://localhost:5432/"+database)
           .option("dbtable", table)
@@ -96,7 +95,7 @@ object KafkaConsumerSubscribeApp2 extends App {
           .option("password", password)
           .mode("append").save()
 
-        println("finished writing to database")
+        //println("finished writing to database")
 
         jsonSeq.clear()
       }
