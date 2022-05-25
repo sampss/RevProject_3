@@ -19,13 +19,13 @@ object KafkaConsumer extends App {
 
   // properties for database
   val database="greenteam";
-  val table = "sales"
+  val table = "sales_teama"
   val username="postgres"
   val password="wagle"
   val jdbcUrl = "jdbc:postgresql://localhost:5432/"
 
   // properties variables for connecting to kafka
-  val topics = List("test_topic")
+  val topics = List("teamA_ecommerce")
   val groupId = "greenteam"
   val kafkaIpPort = "localhost:9092"
   //val kafkaIpPort = "3.94.111.218:9092"
@@ -57,11 +57,12 @@ object KafkaConsumer extends App {
         var jsonDS = test.toDS()
         var df = spark.read.json(jsonDS)
 
+        df = df.withColumn("time", to_timestamp(col("time"), "yyyy-MM-dd HH:mm:ss")).drop("datetime")
         //df = df.withColumn("datetime", to_timestamp(col("datetime"), "yyyy-MM-dd"))
         //df = df.withColumn("datetime", date_format(to_date(col("datetime"),"dd-MM-yyyy"),"yyyy-MM-dd"))
         //df = df.withColumn("datetime", col("datetime").cast())
         //val df1 = df.withColumn("datetime", to_date(col("datetime"), "yyyy-MM-dd"))
-        df = df.withColumn("datetime", to_date(col("time"), "yyyy-MM-dd")).drop("time")
+        //df = df.withColumn("datetime", to_date(col("time"), "yyyy-MM-dd")).drop("time")
 
 
         df.show()
