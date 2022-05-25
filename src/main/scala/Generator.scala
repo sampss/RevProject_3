@@ -1,19 +1,10 @@
-import java.sql.{Connection, DriverManager}
-import java.sql.{Connection, DriverManager, ResultSet, SQLException, Statement}
 import java.util.Properties
-import scala.collection.mutable
-//import scala.collection._
 import scala.io._
 import scala.language.postfixOps
-import scala.util.matching.Regex
-import java.sql.ResultSetMetaData
-import java.text.{DateFormat, FieldPosition, ParsePosition, SimpleDateFormat}
-import java.util.Date
 import scala.collection.mutable._
 import java.time._
 import scala.util.Random
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
-//
 
 object Generator {
 
@@ -28,9 +19,9 @@ object Generator {
     // set trends to be randomly picked from
     val trends = List(
       Map("trendSetter" -> "customer", "setterValue" -> "India", "trendEffect" -> "product", "effectValue" -> "Fruits", "percentModifier" -> "40"),
-      Map("trendSetter" -> "product", "setterValue" -> "Meat", "trendEffect" -> "customer", "effectValue" -> "India", "percentModifier" -> "30"),
+      Map("trendSetter" -> "product", "setterValue" -> "Meat", "trendEffect" -> "customer", "effectValue" -> "United States", "percentModifier" -> "30"),
       Map("trendSetter" -> "paymentType", "setterValue" -> "eWallet", "trendEffect" -> "customer", "effectValue" -> "India", "percentModifier" -> "60"),
-      Map("trendSetter" -> "customer", "setterValue" -> "India", "trendEffect" -> "paymentType", "effectValue" -> "eWallet", "percentModifier" -> "30"),
+      Map("trendSetter" -> "customer", "setterValue" -> "Mexico", "trendEffect" -> "paymentType", "effectValue" -> "eWallet", "percentModifier" -> "50"),
       Map("trendSetter" -> "paymentType", "setterValue" -> "eWallet", "trendEffect" -> "passFail", "effectValue" -> "fail", "percentModifier" -> "40"),
       Map("trendSetter" -> "customer", "setterValue" -> "Canada", "trendEffect" -> "product", "effectValue" -> "Baby Food", "percentModifier" -> "40"),
       Map("trendSetter" -> "product", "setterValue" -> "Clothes", "trendEffect" -> "customer", "effectValue" -> "China", "percentModifier" -> "70"),
@@ -534,16 +525,19 @@ object Generator {
 // ---------- PRODUCER FUNCTION --------------//
   def producerFunc(stringToSend:String) {
 
+    val kafkaIpPort = "localhost:9092"
+    //val kafkaIpPort = "3.94.111.218:9092"
+    val topic = "test_topic"
+
     println("producer Ran")
     val props:Properties = new Properties()
-    props.put("bootstrap.servers","localhost:9092")
+    props.put("bootstrap.servers",kafkaIpPort)
     props.put("key.serializer",
       "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer",
       "org.apache.kafka.common.serialization.StringSerializer")
     props.put("acks","all")
     val producer = new KafkaProducer[String, String](props)
-    val topic = "test_topic"
 
     try {
       val record1 = new ProducerRecord[String, String](topic,stringToSend)

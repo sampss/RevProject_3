@@ -1,54 +1,45 @@
 import java.util.{Collections, Properties}
-import java.util.regex.Pattern
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import scala.collection.JavaConverters._
-
-import java.util.Properties
-import java.util.Calendar
-import java.sql.DriverManager
-import java.sql.Connection
 
 //Scala Libraries
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
-//Kafka Libraries
-import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
-import org.apache.kafka.common.serialization.StringDeserializer
-
 //Spark Libraries
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.{StructType, StructField}
-import org.apache.spark.streaming.kafka010._
-import org.apache.spark.streaming.kafka010.KafkaUtils
-import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 
 //Play Libraries for Json
 import play.api.libs.json._
 
-object KafkaConsumerSubscribeApp2 extends App {
+object KafkaConsumer extends App {
   val spark = SparkSession.builder.master("local[*]").appName("SparkKafkaConsumer").getOrCreate()
   import spark.implicits._
 
-  var database="data_test";
-  var table = "teamb"
-  var username="postgres"
-  var password="wagle"
+  // properties for database
+  val database="greenteam";
+  val table = "sales"
+  val username="postgres"
+  val password="wagle"
+  val jdbcUrl = "jdbc:postgresql://localhost:5432/"
+
+  // properties variables for connecting to kafka
+  val topics = List("test_topic")
+  val groupId = "greenteam"
+  val kafkaIpPort = "localhost:9092"
+  //val kafkaIpPort = "3.94.111.218:9092"
+
   val props:Properties = new Properties()
-  props.put("group.id", "test")
-  props.put("bootstrap.servers","localhost:9092")
+  props.put("group.id", groupId)
+  props.put("bootstrap.servers",kafkaIpPort)
   props.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer")
-  props.put("value.deserializer",
-    "org.apache.kafka.common.serialization.StringDeserializer")
+  props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
   props.put("enable.auto.commit", "true")
   props.put("auto.commit.interval.ms", "1000")
   props.put("auto.offset.reset", "earliest")
 
   val consumer = new KafkaConsumer(props)
-  val topics = List("test_topic")
   try {
     consumer.subscribe(topics.asJava)
     var jsonSeq = new ListBuffer[String]
@@ -77,7 +68,6 @@ object KafkaConsumerSubscribeApp2 extends App {
         df.printSchema()
 
 
-        println("before temp table")
         df.createOrReplaceTempView("orders")
         var df2 = spark.sql("select * from orders")
         var props2 = new Properties()
@@ -85,17 +75,15 @@ object KafkaConsumerSubscribeApp2 extends App {
         props2.put("user", username)
         props2.put("password", password)
 
-        df2.write.mode("append").jdbc("jdbc:postgresql://localhost:5432/"+database, table, props2)
-        //println("df2 write")
+        df2.write.mode("append").jdbc(jdbcUrl+database, table, props2)
+
         df.write
           .format("jdbc")
-          .option("url", "jdbc:postgresql://localhost:5432/"+database)
+          .option("url", jdbcUrl+database)
           .option("dbtable", table)
           .option("user", username)
           .option("password", password)
           .mode("append").save()
-
-        //println("finished writing to database")
 
         jsonSeq.clear()
       }
