@@ -306,7 +306,7 @@ object Generator {
     thisSale ++= "\"payment_type\":\"" + modifiedData(2) + "\", "
     thisSale ++= "\"qty\":" + modifiedData(3) + ", "
     thisSale ++= "\"price\":" + price + ", "
-    thisSale ++= "\"datetime\":\"" + dateTime.toString + "\", "
+    thisSale ++= "\"time\":\"" + dateTime.toString + "\", "
     thisSale ++= "\"" + customerColumnHeader(2) + "\":\"" + customer(2) + "\", "
     thisSale ++= "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
     thisSale ++= "\"ecommerce_website_name\":\"" + website + "\", "
