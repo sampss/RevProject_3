@@ -25,7 +25,7 @@ lazy val spark = Seq(
 )
 
 lazy val jdbc = Seq(
-  "org.postgresql" % "postgresql" % "42.3.3"
+  "org.postgresql" % "postgresql" % "42.3.4"
 )
 
 

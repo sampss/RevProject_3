@@ -20,9 +20,9 @@ object Generator {
   def main(args: Array[String]): Unit = {
 
     var presets = Map(
-      "minNumSales" -> "25000", // minimum number of records allowed
+      "minNumSales" -> "200", // minimum number of records allowed
       "startDate" -> "2020,1,1", // start date of sales
-      "endDate" -> "2022,1,1", // end date of sales
+      "endDate" -> "2021,1,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
     )
     // set trends to be randomly picked from
@@ -274,6 +274,12 @@ object Generator {
     val validWebsites = websites.collect{ case x if x._2.contains(product(2)) => x._1 }.toList
     website = validWebsites(Random.nextInt(validWebsites.length))
 
+    // modify txn to boolean
+    var modifiedTxn = ""
+    if(paymentTxnSuccess == "pass"){
+      modifiedTxn = "true"
+    }else{ modifiedTxn = "false"}
+
     // set 5% chance at bad data
     val bdata = Random.nextInt(100)
     var modifiedData = new ListBuffer[String]
@@ -283,11 +289,11 @@ object Generator {
     modifiedData.append(qty.toString)
     modifiedData.append(product(1))
     if (bdata < 6 ){
-      if( bdata == 5 ){ modifiedData(0) = "@!#?@!" } // txnId
-      if( bdata == 4 ){ modifiedData(1) = "@!#?@!" } // customer id Int
-      if( bdata == 3 ){ modifiedData(2) = "" } // payment type
-      if( bdata == 2 ){ modifiedData(3) = "@!#?@!" } // qty
-      if( bdata == 1 ){ modifiedData(4) = "" } // product name
+      //if( bdata == 5 ){ modifiedData(0) = "11111.11" } // txnId
+      //if( bdata == 4 ){ modifiedData(1) = "000.00" } // customer id Int
+      if( bdata == 3 || bdata == 4){ modifiedData(2) = "@!#?@!" } // payment type
+      if( bdata == 2 || bdata == 5 ){ modifiedData(3) = "0" } // qty
+      if( bdata == 1 ){ modifiedData(4) = "@!#?@!" } // product name
     }
 
     // ---------- Build JSON Section -----------//
@@ -305,7 +311,7 @@ object Generator {
     thisSale ++= "\"" + customerColumnHeader(3) + "\":\"" + customer(3) + "\", "
     thisSale ++= "\"ecommerce_website_name\":\"" + website + "\", "
     thisSale ++= "\"payment_txn_id\":\"" + modifiedData(0) + "\", "
-    thisSale ++= "\"payment_txn_success\":\"" + paymentTxnSuccess + "\", "
+    thisSale ++= "\"payment_txn_success\":" + modifiedTxn + ", "
     thisSale ++= "\"failure_reason\":\"" + failureReason + "\"}"
 
     thisSale.toString
