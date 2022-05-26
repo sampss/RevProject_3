@@ -11,7 +11,7 @@ object Generator {
   def main(args: Array[String]): Unit = {
 
     var presets = Map(
-      "minNumSales" -> "200", // minimum number of records allowed
+      "minNumSales" -> "25000", // minimum number of records allowed
       "startDate" -> "2020,1,1", // start date of sales
       "endDate" -> "2021,1,1", // end date of sales
       "minRecordsPerDay" -> "" // min records per day - result of days / numberSales -- Auto adjusted based on minNumSales and Dates
@@ -525,17 +525,15 @@ object Generator {
 // ---------- PRODUCER FUNCTION --------------//
   def producerFunc(stringToSend:String) {
 
-    val kafkaIpPort = "localhost:9092"
-    //val kafkaIpPort = "3.94.111.218:9092"
+    //val kafkaIpPort = "localhost:9092"
+    val kafkaIpPort = "3.94.111.218:9092"
     val topic = "test_topic"
 
     println("producer Ran")
     val props:Properties = new Properties()
-    props.put("bootstrap.servers",kafkaIpPort)
-    props.put("key.serializer",
-      "org.apache.kafka.common.serialization.StringSerializer")
-    props.put("value.serializer",
-      "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("bootstrap.servers", kafkaIpPort )
+    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("acks","all")
     val producer = new KafkaProducer[String, String](props)
 
