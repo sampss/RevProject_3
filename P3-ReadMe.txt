@@ -1,11 +1,5 @@
 
-Spark Project for Revature covering Walmart DataSet1
-
-# Walmart Sales Data Analysis
-
 ## Project Description
-
-Review, analyze and discuss Walmart sales data from 45 stores between the years 2010 and 2012. Discover if holidays have an impact positively or negatively on retail stores in certain regions.
 
 ## Technologies Used
 
