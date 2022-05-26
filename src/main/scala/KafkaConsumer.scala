@@ -58,15 +58,11 @@ object KafkaConsumer extends App {
         var df = spark.read.json(jsonDS)
 
         df = df.withColumn("time", to_timestamp(col("time"), "yyyy-MM-dd HH:mm:ss")).drop("datetime")
-        //df = df.withColumn("datetime", to_timestamp(col("datetime"), "yyyy-MM-dd"))
-        //df = df.withColumn("datetime", date_format(to_date(col("datetime"),"dd-MM-yyyy"),"yyyy-MM-dd"))
-        //df = df.withColumn("datetime", col("datetime").cast())
-        //val df1 = df.withColumn("datetime", to_date(col("datetime"), "yyyy-MM-dd"))
         //df = df.withColumn("datetime", to_date(col("time"), "yyyy-MM-dd")).drop("time")
 
 
-        df.show()
-        df.printSchema()
+        //df.show()
+        //df.printSchema()
 
 
         df.createOrReplaceTempView("orders")

@@ -525,8 +525,8 @@ object Generator {
 // ---------- PRODUCER FUNCTION --------------//
   def producerFunc(stringToSend:String) {
 
-    //val kafkaIpPort = "localhost:9092"
-    val kafkaIpPort = "3.94.111.218:9092"
+    val kafkaIpPort = "localhost:9092"
+    //val kafkaIpPort = "3.94.111.218:9092"
     val topic = "test_topic"
 
     println("producer Ran")
